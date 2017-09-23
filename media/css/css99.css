@@ -1,0 +1,67 @@
+/* Criado por João de Paula */
+
+.avatar-nav img {
+	max-height: 30px !important;
+	margin-top: 0px !important;
+}
+
+.bg-azul {
+	background-color: rgba(50, 150, 255, 1) !important;
+}
+
+/* Módulo Instituição */
+
+.text-list-instituicao {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.card-instituicao-membros {
+	min-width: 23%;
+	max-width: 23%;
+}
+
+.card-instituicao-membros img {
+	position: relative;
+	max-height: 40%;
+	min-height: 40%;
+}
+
+.card-instituicao {
+	min-width: 31.3%;
+	max-width: 31.3%;
+}
+
+.card-instituicao img {
+	position: relative;
+	max-height: 40%;
+	min-height: 40%;
+}
+
+/* Evento */
+
+
+/* Edições do Bootstrap */
+
+.breadcrumb {
+	margin: 1% 1% !important;
+}
+
+.jumbotron {
+	padding: 2rem 2rem !important;
+	margin: 0 1% !important;
+}
+
+.card {
+	margin: 1% !important;
+}
+
+.card-footer {
+	height: 55px !important;
+}
+
+.content-wrapper {
+	margin-top: -24px !important;
+	padding: 1% 0 !important;
+}
