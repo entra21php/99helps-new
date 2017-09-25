@@ -3,7 +3,7 @@
 	// Desenvolvido por: Douglas e Jefferson
 class Usuario Extends Site {
 
-	public $id 			= "";
+	public $id 				= "";
 	public $nome 			= "";
 	public $sobrenome 		= "";
 	public $sexo 			= "";
@@ -24,53 +24,25 @@ class Usuario Extends Site {
 	public function __construct() {		
 		# Verifica a acao do momento (perfil_usuario, del, edt, add)
 		if (isset($_GET['edt'])) {
-
-			// // se esta salvando edição
-			// if (isset($_POST['enviar'])) {
-
-			// 	$this->editCadastro();
-
-			// // senao, esta exibindo form com os dados
-			// } else {
-
-			// 	$this->id=$_GET['edit'];
-			// 	// se é edição
-			// 	// $this->editCadastro($this->id);
-			// 	$this->verCadastro($this->id);
-
-			// 	$this->formCadastro($this->id);
-			// }
-
-
-			#  EDIÇÃO
+			// EDIÇÃO
 			if ($_GET['edt']==$_SESSION['id_usuario']) {
-				$this->editCadastro($_GET['edt']);
-				$this->verCadastro($this->id);
+				$this->recebeDados($_GET['edt']);
+				$this->editCadastro();
+				$this->editPassword();
 				$this->formCadastro($this->id);
 			} else {
 				header("Location: evento.php?msg=<strong>Erro! </strong> Você está tentando acessar uma página sem permissão =(&alert=danger");
 			}
-
-		} elseif (isset($_GET['editCadastro'])) {
-		// se é cadastro
-			$this->insertForm('edit',$_GET['editCadastro']);
-
-
 		} elseif (isset($_GET['add'])) {
-
-			// se é cadastro
+			// ADD
 			$this->addCadastro();
-			$this->formCadastro();
-
-		} elseif (isset($_GET['addCadastro'])) {
-
-			// se é cadastro
-			$this->insertForm('add',0);
+			require_once("teste_usuario_form.php");
 
 		} elseif (isset($_GET['ver'])) {
 
-			// VER usuario
-			$this->verCadastro($_GET['ver']);
+// VER USUARIO
+$this->recebeDados($_GET['ver']);
+$this->verUsuario($_GET['ver']);
 
 		}elseif (isset($_GET['del'])) {
 
@@ -86,29 +58,20 @@ class Usuario Extends Site {
 
 		}else {
 			// senao, é listagem
-			$this->verCadastro($_SESSION['id_usuario']);
+			$this->recebeDados($_SESSION['id_usuario']);
 		}
 
 	} // fim __construct
 
 	public function addCadastro() {
 		# Recebe informações do conteudo da pagina e realiza insert
-		if(isset($_POST['enviar'])) {
+		if(isset($_POST['cadastro'])) {
 
-			$this->nome 			=$_POST['nome'];
-			$this->sobrenome 		=$_POST['sobrenome'];
-			$this->sexo 			=$_POST['sexo'];
-			$this->datanascimento 	=$_POST['datanascimento'];
-			$this->fk_cidades 		=$_POST['fk_cidades'];
-			$this->email 			=$_POST['email'];
-			$this->email_confere	=$_POST['email_confere']; 	
-			$this->senha 		 	=$_POST['senha'];
-			$this->senha_confere	=$_POST['senha_confere'];
-			$this->interesses		=$_POST['interesses'];
-			$this->descricao		=$_POST['descricao'];
-			$this->exibe_form 		    = true;
+			$this->recebeCadastro();
+			$this->verificaCadastro();
+			
 
-			# receber imagem
+			# IMAGEM
 
 			// diretorio pra salvar
 			$target_dir = "uploads/";
@@ -151,32 +114,11 @@ class Usuario Extends Site {
 		}
 
 
-			#VERIFICACAO DE ERROS
 
-			// Verifica se existe campo vazio
-		if ((empty($this->nome))  ||  (empty($this->sobrenome)) || (empty($this->sexo)) || (empty($this->datanascimento)) || (empty($this->interesses)) || (empty($this->fk_cidades)) || (empty($this->email)) || (empty($this->email_confere)) || (empty($this->senha))  ||  (empty($this->senha_confere))  ) {
-			$erro = true;
-			echo '<div class="alert alert-danger" role="alert">Preencha todos os campos </div>';
-		}
-			//confere se os email são iguais
-		if ($this->email != $this->email_confere) {
-			$this->erro = true;
-			echo '<strong>Erro!</strong> Os email não são iguais';
-		}
-			// conferir se as senhas são iguais
-		if ($this->senha != $this->senha_confere) {
-			$this->erro = true;
-			echo '<strong>Erro!</strong> As senhas devem ser iguais'; 
-		}
-			// e ter pelo menos 8 caracteres
-		if (strlen($this->senha) < 8) {
-			$this->erro = true;
-			echo '<strong>Erro!</strong> A senha deve ter pelo menos 8 caracteres!!';
-		}
-			# criptografar senha
+		# criptografar senha
 		$this->senha_crypt = hash('sha512',$this->senha);
 
-			// Exibe erro se ele existir
+		// Exibe erro se ele existir
 		if ($this->erro == false) {
 			$sql = "INSERT INTO  usuarios_fisico (
 			nome,
@@ -249,47 +191,22 @@ public function delCadastro($id) {
 
 public function editPassword(){
 	if(isset($_POST['password'])) {
-		$this->email 			=$_POST['email'];
-		$this->email_confere		=$_POST['email_confere']; 	
-		$this->senha 		 	=$_POST['senha'];
-		$this->senha_confere	=$_POST['senha_confere'];
+		# Recebe dados e verifica
+		$this->recebeSeguranca();
+		$this->verificaSeguranca();
 
-
-		if ((empty($this->email)) || (empty($this->email_confere)) || (empty($this->senha))  ||  (empty($this->senha_confere)) ) {
-			$erro = true;
-			echo '<div class="alert alert-danger" role="alert">Preencha todos os campos </div>';
-		}
-			//confere se os email são iguais
-		if ($this->email != $this->email_confere) {
-			$this->erro = true;
-			echo '<strong>Erro!</strong> Os email não são iguais';
-		}
-			// conferir se as senhas são iguais
-		if ($this->senha != $this->senha_confere) {
-			$this->erro = true;
-			echo '<strong>Erro!</strong> As senhas devem ser iguais'; 
-		}
-			// e ter pelo menos 8 caracteres
-		if (strlen($this->senha) < 8) {
-			$this->erro = true;
-			echo '<strong>Erro!</strong> A senha deve ter pelo menos 8 caracteres!!';
-		}
-			# criptografar senha
+		# Criptografar senha
 		$this->senha_crypt = hash('sha512',$this->senha);
 
-			// Exibe erro se ele existir
+		// Exibe erro se ele existir
 		if ($this->erro == false) {
-
-			$sql = "UPDATE usuarios_fisico SET  	
-			email =	'$this->email',
-			senha =	'$this->senha_crypt'
-			WHERE id 		=" . $this->id;
+			$sql = "UPDATE usuarios_fisico SET  email =	'$this->email', senha =	'$this->senha_crypt' WHERE id=".$_GET['edt'];
 			if (mysql_query($sql)) {
 				echo '<div class="alert alert-success" role="alert">Editado com sucesso </div>';
 				echo'<a href="usuario.php?ver='.$this->id.'&acao=informacoes"><button type="button" class="btn btn-secundary">Voltar</button></a>';
-
 			} else {
 				echo '<p>Problemas na edição!</p>';
+				ECHO $this->id;
 				echo $sql;
 			}
 		}
@@ -297,20 +214,12 @@ public function editPassword(){
 }
 public function editCadastro() {
 
+	# Recebe informações do conteudo da pagina e realiza insert
+	if(isset($_POST['cadastro'])) {
 
-
-		# Recebe informações do conteudo da pagina e realiza insert
-	if(isset($_POST['enviar'])) {
-
-		$this->id 			= $_POST['id'];
-		$this->nome 			= $_POST['nome'];
-		$this->sobrenome 		= $_POST['sobrenome'];
-		$this->sexo 			= $_POST['sexo'];
-		$this->datanascimento 	= $_POST['datanascimento'];
-		$this->fk_cidades 		= $_POST['fk_cidades'];	
-		$this->descricao 		= $_POST['descricao'];
-		$this->interesses		=$_POST['interesses'];
-			
+		// Recebe os dados e faz as verificacoes
+		$this->recebeCadastro();
+		$this->verificaCadastro();
 
 		// VETOR EXISTE
 		$existe = "SELECT fk_interesse FROM interesses_usuario WHERE fk_usuario = $this->id";
@@ -353,13 +262,7 @@ public function editCadastro() {
 			mysql_query($add);
 		}	
 
-		// Verifica se existe campo vazio
-		if ((empty($this->nome))  ||  (empty($this->sobrenome)) || (empty($this->sexo)) || (empty($this->datanascimento))  || (empty($this->fk_cidades)) ) {
-			$this->erro = true;
-			echo '<div class="alert alert-danger" role="alert">Preencha todos os campos </div>';
-		}
-
-			// Exibe erro se ele existir
+		// Exibe erro se ele existir
 		if ($this->erro == false) {
 
 			$sql = "UPDATE usuarios_fisico SET  	
@@ -379,17 +282,14 @@ public function editCadastro() {
 				echo $sql;
 			}
 		}
-
 	}
 }
-public function verCadastro($id){
-		// Consulta
 
+public function recebeDados($id){
+	// Consulta
 	$sql = "SELECT * FROM usuarios_fisico LEFT JOIN cidades ON usuarios_fisico.fk_cidades = cidades.id  WHERE usuarios_fisico.id = " . $id;
 	$consulta = mysql_query($sql);
 	$rsvar = mysql_fetch_array($consulta);
-
-	
 
 	$this->nome 			= $rsvar['nome'];
 	$this->sobrenome 		= $rsvar['sobrenome'];
@@ -398,18 +298,18 @@ public function verCadastro($id){
 	$this->imagem_perfil 	= $rsvar['imagem_perfil'];
 	$this->estado 			= $rsvar['estado'];
 	$this->fk_cidades 		= $rsvar['fk_cidades'];
+	$this->email 			= $rsvar['email'];
+	$this->senha 		 	= $rsvar['senha'];
+	$this->interesses		= $rsvar['interesses'];
 	$this->descricao 		= $rsvar['descricao'];
 	$this->ativo			= $rsvar['ativo'];
-	
-
-			#  Select do usuario e require do html da página (perfil_usuario -> pagina do perfil detalhado)
-			// Aqui será a página bonita que exibe o perfil do usuário de acordo com o parametro id
-	if (isset($_GET['edit'])) {
-		require_once("usuario_edit.php");
-	}else{
-		require_once("usuario_perfil.php");
-	}
 }
+
+public function verUsuario($id) {
+	// Chama página de exibição
+	require_once("usuario_perfil.php");
+}
+
 public function formPassword($id){
 
 	if ($_GET['password']) {
@@ -430,5 +330,101 @@ public function formCadastro($id = 0) {
 
 	require_once("/usuario_form.php");
 }
+
+public function recebeCadastro() {
+	if (isset($_GET['edt'])) {
+		$this->id 				= $_GET['edt'];
+		$this->nome 			= $_POST['nome'];
+		$this->sobrenome 		= $_POST['sobrenome'];
+		$this->sexo 			= $_POST['sexo'];
+		$this->datanascimento 	= $_POST['datanascimento'];
+		$this->fk_cidades 		= $_POST['fk_cidades'];	
+		$this->descricao 		= $_POST['descricao'];
+		$this->interesses		= $_POST['interesses'];
+	} elseif (isset($_GET['add'])) {
+		$this->nome 			= $_POST['nome'];
+		$this->sobrenome 		= $_POST['sobrenome'];
+		$this->sexo 			= $_POST['sexo'];
+		$this->datanascimento 	= $_POST['datanascimento'];
+		$this->fk_cidades 		= $_POST['fk_cidades'];
+		$this->email 			= $_POST['email'];
+		$this->email_confere	= $_POST['email_confere']; 	
+		$this->senha 		 	= $_POST['senha'];
+		$this->senha_confere	= $_POST['senha_confere'];
+		$this->interesses		= $_POST['interesses'];
+		$this->descricao		= $_POST['descricao'];
+		$this->exibe_form 		= true;
+	}
+}
+
+public function recebeSeguranca() {
+	# Setando dados
+	$this->email 			= $_POST['email'];
+	$this->email_confere	= $_POST['email_confere']; 	
+	$this->senha 		 	= $_POST['senha'];
+	$this->senha_confere	= $_POST['senha_confere'];
+}
+
+public function verificaCadastro() {
+	if (isset($_GET['edt'])) {
+		// Verifica se existe campo vazio
+		if ((empty($this->nome))  ||  (empty($this->sobrenome)) || (empty($this->sexo)) || (empty($this->datanascimento))  || (empty($this->fk_cidades)) ) {
+			$this->erro = true;
+			echo '<div class="alert alert-danger" role="alert">Preencha todos os campos </div>';
+		}
+	} elseif (isset($_GET['add'])) {
+		# VERIFICACAO DE ERROS
+		// Verifica se existe campo vazio
+		if ((empty($this->nome))  ||  (empty($this->sobrenome)) || (empty($this->sexo)) || (empty($this->datanascimento)) || (empty($this->interesses)) || (empty($this->fk_cidades)) || (empty($this->email)) || (empty($this->email_confere)) || (empty($this->senha))  ||  (empty($this->senha_confere))  ) {
+			$erro = true;
+			echo '<div class="alert alert-danger" role="alert">Preencha todos os campos </div>';
+		}
+		//confere se os email são iguais
+		if ($this->email != $this->email_confere) {
+			$this->erro = true;
+			echo '<strong>Erro!</strong> Os email não são iguais';
+		}
+		// conferir se as senhas são iguais
+		if ($this->senha != $this->senha_confere) {
+			$this->erro = true;
+			echo '<strong>Erro!</strong> As senhas devem ser iguais'; 
+		}
+		// e ter pelo menos 8 caracteres
+		if (strlen($this->senha) < 8) {
+			$this->erro = true;
+			echo '<strong>Erro!</strong> A senha deve ter pelo menos 8 caracteres!!';
+		}
+	}	
+}
+
+public function verificaSeguranca() {
+	# Verificações
+	if ((empty($this->email)) || (empty($this->email_confere)) || (empty($this->senha))  ||  (empty($this->senha_confere)) ) {
+		$this->erro = true;
+		echo '<div class="alert alert-danger" role="alert">Preencha todos os campos </div>';
+	}
+		//confere se os email são iguais
+	if ($this->email != $this->email_confere) {
+		$this->erro = true;
+		echo '<strong>Erro!</strong> Os email não são iguais';
+	}
+		// conferir se as senhas são iguais
+	if ($this->senha != $this->senha_confere) {
+		$this->erro = true;
+		echo '<strong>Erro!</strong> As senhas devem ser iguais'; 
+	}
+		// e ter pelo menos 8 caracteres
+	if (strlen($this->senha) < 8) {
+		$this->erro = true;
+		echo '<strong>Erro!</strong> A senha deve ter pelo menos 8 caracteres!!';
+	}
+}
+
+
+
+
+
+
+
 }
 ?>
