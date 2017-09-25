@@ -156,15 +156,15 @@ $this->verUsuario($_GET['ver']);
 					$sql = "INSERT INTO interesses_usuario (fk_usuario, fk_interesse) VALUES ($this->id_usuario, $fk_interesse)";
 					if (mysql_query($sql)) {
 				// para ter certeza qual grupo foi adicionado
-						echo "adicionado o interesse: " . $fk_interesse . "<br>";
+						// echo "adicionado o interesse: " . $fk_interesse . "<br>";
 					}
 				}
 
-				echo "cadastrado com sucesso<br><br><br>" ;
+				// echo "cadastrado com sucesso<br><br><br>" ;
 
 				# salva o arquivo no diretorio upload
 				if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $nome_novo)) {
-					echo "Arquivo cadastrado: ". basename( $_FILES["fileToUpload"]["name"]). "  <br>";
+					// echo "Arquivo cadastrado: ". basename( $_FILES["fileToUpload"]["name"]). "  <br>";
 				} else {
 					echo "Sorry, there was an error uploading your file.";
 				}
@@ -428,3 +428,4 @@ public function verificaSeguranca() {
 
 }
 ?>
+
