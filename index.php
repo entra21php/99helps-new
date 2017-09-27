@@ -1,10 +1,10 @@
-﻿<?php
+<?php
 	# Include da classe principal
 	require_once("classes/site.class.php");
 	$site = new Site($hef=true);
 
 	$_SESSION["logado"] = "sim";
-	$_SESSION["id_usuario"] = 49;
+	$_SESSION["id_usuario"] = 67;
 	$_SESSION["nome_usuario"] = "João";
 	$_SESSION["img_perfil"] = "uploads/user1.jpg";
 
@@ -42,7 +42,7 @@
 				<div class="card-body">
 					<h4 class="card-title"><?=$rs['titulo']?></h4>
 					<p class="card-text text-list-instituicao">
-						<?=print(limitarTexto($rs['descricao'], $limite = 250))?>
+						<?=limitarTexto($rs['descricao'], $limite = 250)?>
 					</p>
 				</div>
 				<div class="card-footer">
