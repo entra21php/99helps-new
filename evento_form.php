@@ -46,13 +46,13 @@
 				<!-- LINHA 4 -->
 				<div class="row">
 					<div class="form-group col-3">
-						<label for="cep">CEP:</label>
+						<label for="cep">CEP</label>
 						<input name="cep" type="text" id="cep" class="form-control" value="<?=$this->cep?>">
 						<small id="cep" class="form-text text-muted">Digite somente números
 						</small>
 					</div>
 					<div class="form-group col-7">
-						<label>Rua:</label>
+						<label>Rua</label>
 						<input name="logradouro" type="text" id="logradouro" class="form-control" value="<?=$this->logradouro?>"><small id="logradouro" class="form-text text-muted">Rua em que acontecerá o evento
 						</small>
 					</div>
@@ -64,20 +64,20 @@
 				<!-- LINHA 5 -->
 				<div class="row">
 					<div class="form-group col-3 ">
-						<label>Bairro:</label>
+						<label>Bairro</label>
 						<input name="bairro" type="text" id="bairro" size="40" class="form-control" value="<?=$this->bairro?>">
 					</div>
 					<div class="form-group col-3 ">
-						<label>Cidade:</label>
+						<label>Cidade</label>
 						<input name="cidade" type="text" id="cidade" size="40" class="form-control" value="<?=$this->cidade?>">
 					</div>
 					<div class="form-group col-1">
-						<label>Estado:</label>
+						<label>Estado</label>
 						<input name="uf" type="text" id="uf" size="2" class="form-control" value="<?=$this->uf?>">
 					</div>
 
 					<div class="form-group col-5">
-						<label for="fk_instituicao">Instituição: </label>
+						<label for="fk_instituicao">Instituição </label>
 						<select class="custom-select form-control" name="fk_instituicao">
 							<?php
 							$sql ="SELECT instituicoes.nome_fantasia,instituicoes.id,usuarios_instituicoes.nivel_acesso FROM usuarios_instituicoes LEFT JOIN instituicoes ON usuarios_instituicoes.fk_instituicao=instituicoes.id WHERE fk_usuario=".$_SESSION['id_usuario']." AND usuarios_instituicoes.nivel_acesso='Administrador'";
