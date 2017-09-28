@@ -5,10 +5,12 @@
 
 	public $razaoSocial;
 	public $nomeFantasia;
+	public $cep;
 	public $logradouro;
-	public $numero;
-	public $estado;
+	public $bairro;
 	public $cidade;
+	public $uf;
+	public $numero;
 	public $causa_defendida;
 	public $descricao;
 	public $imagem_perfil;
@@ -73,10 +75,12 @@
 			// Set
 			$this->razaoSocial 		= null;
 			$this->nomeFantasia 	= null;
+			$this->cep 				= null;
 			$this->logradouro 		= null;
-			$this->numero 			= null;
-			$this->estado 			= null;
+			$this->bairro		 	= null;
 			$this->cidade 			= null;
+			$this->uf 		 		= null;
+			$this->numero 			= null;
 			$this->causa_defendida 	= null;
 			$this->descricao 		= null;
 		} else {
@@ -95,10 +99,12 @@
 			// Set
 			$this->razaoSocial 		= $rsvar['razao_social'];
 			$this->nomeFantasia 	= $rsvar['nome_fantasia'];
+			$this->nomeFantasia 	= $rsvar['cep'];
 			$this->logradouro 		= $rsvar['logradouro'];
+			$this->bairro  			= $rsvar['bairro'];
+			$this->cidade 			= $rsvar['cidade'];
+			$this->uf 		     	= $rsvar['uf'];
 			$this->numero 			= $rsvar['numero'];
-			$this->estado 			= $rsvar['estado'];
-			$this->cidade 			= $rsvar['fk_cidade'];
 			$this->causa_defendida 	= $rsvar['causa_defendida'];
 			$this->descricao	 	= $rsvar['descricao'];
 
@@ -110,10 +116,12 @@
 		# Recebe os valores do formulário e atribui as variaveis
 		$this->razaoSocial 		= $_POST['razaoSocial'];
 		$this->nomeFantasia 	= $_POST['nomeFantasia'];
+		$this->cep 				= $_POST['cep'];
 		$this->logradouro 		= $_POST['logradouro'];
-		$this->numero 			= $_POST['numero'];
-		$this->estado 			= $_POST['estado'];
+		$this->bairro 			= $_POST['bairro'];
 		$this->cidade 			= $_POST['cidade'];
+		$this->uf 				= $_POST['uf'];
+		$this->numero 			= $_POST['numero'];
 		$this->causa_defendida 	= $_POST['causa_defendida'];
 		$this->descricao	 	= $_POST['descricao'];
 	}
@@ -123,7 +131,7 @@
 		$msg_erro = null;
 
 		# Verifica se existe campo vazio
-		if ((empty($this->razaoSocial)) || (empty($this->nomeFantasia)) || (empty($this->logradouro)) || (empty($this->numero)) || (empty($this->estado)) || (empty($this->cidade)) || (empty($this->causa_defendida)) || (empty($this->descricao))) {
+		if ((empty($this->razaoSocial)) || (empty($this->nomeFantasia)) || (empty($this->cep)) || (empty($this->logradouro)) || (empty($this->bairro)) || (empty($this->cidade)) || (empty($this->uf)) || (empty($this->numero)) || (empty($this->causa_defendida)) || (empty($this->descricao))) {
 			// Seta mensagem de erro
 			$msg_erro .= "<strong>Erro de digitação!</strong> Por gentileza, preencha todos os campos! <br>";
 		}
@@ -184,7 +192,7 @@
 			if ((strlen($this->getVerificacao()))>0) {
 				alert($this->getVerificacao(),"danger");
 			} else {
-				$sql = "INSERT INTO instituicoes(razao_social,nome_fantasia,logradouro,numero,estado,fk_cidade,causa_defendida,descricao,img_perfil) VALUES ('$this->razaoSocial','$this->nomeFantasia','$this->logradouro',$this->numero,'$this->estado',$this->cidade,$this->causa_defendida,'$this->descricao'";
+				$sql = "INSERT INTO instituicoes(razao_social,nome_fantasia,cep,logradouro,bairro,cidade,uf,numero,causa_defendida,descricao,img_perfil) VALUES ('$this->razaoSocial','$this->nomeFantasia','$this->cep','$this->logradouro',$this->bairro,'$this->estado','$this->uf','$this->numero',$this->causa_defendida,'$this->descricao'";
 
 				// Completa o SQL
 				if ($erro!=true) {
@@ -273,7 +281,7 @@
 			if ((strlen($this->getVerificacao()))>0) {
 				alert($this->getVerificacao(),"danger");
 			} else {
-				$sql = "UPDATE instituicoes SET razao_social='$this->razaoSocial', nome_fantasia='$this->nomeFantasia', logradouro='$this->logradouro', numero=$this->numero, estado='$this->estado', fk_cidade=$this->cidade, causa_defendida=$this->causa_defendida, descricao='$this->descricao'";
+				$sql = "UPDATE instituicoes SET razao_social='$this->razaoSocial', nome_fantasia='$this->nomeFantasia',cep='$this->cep' logradouro='$this->logradouro',bairro='$this->bairro','cidade=$this->cidade', uf='$this->uf',numero='$this->numero',causa_defendida=$this->causa_defendida, descricao='$this->descricao'";
 
 				// Completa o SQL
 				if ($erro!=true) {
@@ -336,9 +344,87 @@
 			$breadcrumb_title = "Nova Instituição";
 		}
 
-		# Array com todos os estados do brasil para exibir no form
-		$estado = array("AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO");
+		?>
+<!-- Autocomplete atraves da insercao do cep -->
+	<html>
+    <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+    <!-- Adicionando JQuery -->
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <!-- Adicionando Javascript -->
+    <script type="text/javascript" >
+
+        $(document).ready(function() {
+
+            function limpa_formulário_cep() {
+                // Limpa valores do formulário de cep.
+                $("#rua").val("");
+                $("#bairro").val("");
+                $("#cidade").val("");
+                $("#uf").val("");
+                }
+            
+            //Quando o campo cep perde o foco.
+            $("#cep").blur(function() {
+
+                //Nova variável "cep" somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if(validacep.test(cep)) {
+
+                        //Preenche os campos com "..." enquanto consulta webservice.
+                        $("#rua").val("...");
+                        $("#bairro").val("...");
+                        $("#cidade").val("...");
+                        $("#uf").val("...");
+                        
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                            if (!("erro" in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $("#rua").val(dados.logradouro);
+                                $("#bairro").val(dados.bairro);
+                                $("#cidade").val(dados.localidade);
+                                $("#uf").val(dados.uf);
+                                
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                alert("CEP não encontrado.");
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        alert("Formato de CEP inválido.");
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+            });
+        });
+
+    </script>
+    </head>
+    </html>
+    <?php
+
+		
 		# Include do formulário
 		require_once("instituicao_form.php");
 	}
