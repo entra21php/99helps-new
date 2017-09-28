@@ -9,7 +9,7 @@ $(document).ready( function() {
                 dataType: 'json', /* Tipo de transmissão */
                 success: function(data){
                     if(data.sucesso == 1){
-                        $('#rua').val(data.rua);
+                        $('#logradouro').val(data.logradouro);
                         $('#bairro').val(data.bairro);
                         $('#cidade').val(data.cidade);
                         $('#estado').val(data.estado);
