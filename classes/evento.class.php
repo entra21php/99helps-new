@@ -7,12 +7,14 @@
 	public $descricao;
 	public $data;
 	public $foto_capa;
-	public $fk_instituicao;
+	public $cep;
 	public $logradouro;
-	public $numero;
-	public $estado;
+	public $bairro;
 	public $cidade;
-	
+	public $uf;
+	public $numero;
+	public $fk_instituicao;
+		
 	public function __construct() {		
 
 		# Verifica se está sendo passado parametro de alert
@@ -57,11 +59,14 @@
 			$this->titulo 			= null;
 			$this->descricao 		= null;
 			$this->data 			= null;
-			$this->fk_instituicao   = null;
+			$this->foto_capa		= null;
+			$this->cep 	 			= null;
 			$this->logradouro 		= null;
-			$this->numero 			= null;
-			$this->estado 			= null;
+			$this->bairro 			= null;
 			$this->cidade 			= null;
+			$this->uf    			= null;
+			$this->numero 			= null;
+			$this->fk_instituicao   = null;
 		} else {
 				// Consulta
 			$sql = "SELECT * FROM evento WHERE id= ". $id;
@@ -76,12 +81,15 @@
 				// Set
 			$this->titulo 			= $rsvar['titulo'];
 			$this->descricao 		= $rsvar['descricao'];
-			$this->data 			= $rsvar['data'];		
-			$this->fk_instituicao 	= $rsvar['fk_instituicao'];
+			$this->data 			= $rsvar['data'];
+			$this->foto_capa 		= $rsvar['foto_capa'];
+			$this->cep 				= $rsvar['cep'];
 			$this->logradouro 		= $rsvar['logradouro'];
-			$this->numero 			= $rsvar['numero'];
-			$this->estado 			= $rsvar['estado'];
+			$this->bairro 		    = $rsvar['bairro'];
 			$this->cidade 			= $rsvar['fk_cidade'];
+			$this->uf 			    = $rsvar['uf'];
+			$this->numero 			= $rsvar['numero'];
+			$this->fk_instituicao 	= $rsvar['fk_instituicao'];
 			return $existe;
 		}
 	}
@@ -91,18 +99,21 @@
 		$this->titulo 			= $_POST['titulo'];
 		$this->descricao 		= $_POST['descricao'];
 		$this->data 			= ParseDate($_POST['data'],'Y-m-d') . " " . $_POST['hora'];
-		$this->fk_instituicao 	= $_POST['fk_instituicao'];
+		$this->foto_capa 		= $_POST['foto_capa'];
+		$this->cep 				= $_POST['cep'];
 		$this->logradouro 		= $_POST['logradouro'];
-		$this->numero 			= $_POST['numero'];
-		$this->estado 			= $_POST['estado'];
+		$this->bairro 		    = $_POST['bairro'];
 		$this->cidade 			= $_POST['cidade'];
+		$this->uf 		     	= $_POST['uf'];
+		$this->numero 			= $_POST['numero'];
+		$this->fk_instituicao 	= $_POST['fk_instituicao'];
 	}
 
 	public function getVerificacao() {
 			# Set da variavel de erro
 		$msg_erro = null;
 			# Verifica se existe campo vazio
-		if ((empty($this->titulo)) || (empty($this->descricao)) || (empty($this->data)) || (empty($this->fk_instituicao)) || (empty($this->logradouro)) || (empty($this->numero)) || (empty($this->estado)) || (empty($this->cidade))) {
+		if ((empty($this->titulo)) || (empty($this->descricao)) || (empty($this->data)) || (empty($this->cep)) || (empty($this->logradouro)) || (empty($this->bairro))||  (empty($this->cidade)) ||  (empty($this->uf)) || ((empty($this->numero)) || empty($this->fk_instituicao))) {
 					// Seta mensagem de erro
 			$msg_erro = "<strong>Erro!</strong> Por gentileza, preencha todos os campos! <br>";
 		}
@@ -112,9 +123,9 @@
 	public function addEvento() {
 			# Chamando o set de variaveis
 		$this->setVariaveis(true,0);	
-			# Verifica se houve clique no formulÃ¡rio e executa verificaÃ§Ãµes, posteriormente insert
+			# Verifica se houve clique no formulario e executa verificacoes, posteriormente insert
 		if (isset($_POST['cadastra'])) {
-				// Recebe as variaveis do formulÃ¡rio
+				// Recebe as variaveis do formulario
 			$this->getVariaveis();
 
 				#  Configurações do upload de foto
@@ -149,12 +160,12 @@
 				$erro = true;
 			}
 
-			// O IF chama a verificaÃ§Ã£o de dados do formulÃ¡rio
+			// O IF chama a verificaÃ§Ã£o de dados do formulario
 			// se houver erro exibe o erro, senÃ£o executa o insert
 			if ((strlen($this->getVerificacao()))>0) {
 				alert($this->getVerificacao(),"danger");
 			} else {
-				$sql = "INSERT INTO evento(titulo,descricao,data,foto_capa,fk_instituicao,logradouro,numero,estado,fk_cidade) VALUES ('$this->titulo','$this->descricao','$this->data','$this->foto_capa.".$imageFileType."','$this->fk_instituicao','$this->logradouro', $this->numero, '$this->estado', '$this->cidade')";
+				$sql = "INSERT INTO evento(titulo,descricao,data,foto_capa,cep,logradouro,bairro,cidade,uf,numero,fk_instituicao) VALUES ('$this->titulo','$this->descricao','$this->data','$this->foto_capa.".$imageFileType."','$this->cep','$this->logradouro', '$this->bairro','$this->cidade','$this->uf', $this->numero,'$this->fk_instituicao')";
 					# Se cadastrado com sucesso exibe mensagem sucesso, senão, exibe erro
 				if (mysql_query($sql)) {
 					move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $nome_novo);
@@ -191,7 +202,7 @@
 			if ((strlen($this->getVerificacao()))>0) {
 				alert($this->getVerificacao(),"danger");
 			} else {
-				$sql = "UPDATE evento SET titulo='$this->titulo', descricao='$this->descricao', data='$this->data', foto_capa='$this->foto_capa', fk_instituicao=$this->fk_instituicao, logradouro='$this->logradouro', numero=$this->numero, estado='$this->estado', fk_cidade=$this->cidade WHERE id=".$id;
+				$sql = "UPDATE evento SET titulo='$this->titulo', descricao='$this->descricao', data='$this->data', foto_capa='$this->foto_capa', cep='$this->cep', logradouro='$this->logradouro', bairro='$this->bairro', cidade=$this->cidade,  uf='$this->uf', numero=$this->numero, fk_instituicao=$this->fk_instituicao WHERE id=".$id;
 					# Se cadastrado com sucesso exibe mensagem sucesso, senão, exibe erro
 				if (mysql_query($sql)) {
 					move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $nome_novo);
@@ -224,6 +235,85 @@
 	}
 	
 	public function formEvento() {
+?>
+<!-- Autocomplete atraves da insercao do cep -->
+	<html>
+    <head>
+    <title>ViaCEP Webservice</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- Adicionando JQuery -->
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <!-- Adicionando Javascript -->
+    <script type="text/javascript" >
+
+        $(document).ready(function() {
+
+            function limpa_formulário_cep() {
+                // Limpa valores do formulário de cep.
+                $("#rua").val("");
+                $("#bairro").val("");
+                $("#cidade").val("");
+                $("#uf").val("");
+                }
+            
+            //Quando o campo cep perde o foco.
+            $("#cep").blur(function() {
+
+                //Nova variável "cep" somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if(validacep.test(cep)) {
+
+                        //Preenche os campos com "..." enquanto consulta webservice.
+                        $("#rua").val("...");
+                        $("#bairro").val("...");
+                        $("#cidade").val("...");
+                        $("#uf").val("...");
+                        
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                            if (!("erro" in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $("#rua").val(dados.logradouro);
+                                $("#bairro").val(dados.bairro);
+                                $("#cidade").val(dados.localidade);
+                                $("#uf").val(dados.uf);
+                                
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                alert("CEP não encontrado.");
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        alert("Formato de CEP inválido.");
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+            });
+        });
+
+    </script>
+    </head>
+    </html>
+    <?php
 				# Setando parametros (se o form Ã© edição ou adição)
 		if (isset($_GET['edt'])) {
 			$btn_name = "Salvar";
@@ -274,3 +364,4 @@
 			// se a pessoa Ã© da ong e tÃ¡ na listagem de membros, haverÃ¡ uma barra de busca para ela convidar pessoas
 }
 ?>
+
