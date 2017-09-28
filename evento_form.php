@@ -53,7 +53,7 @@
 					</div>
 					<div class="form-group col-7">
 						<label>Rua:</label>
-						<input name="rua" type="text" id="rua" class="form-control" value="<?=$this->logradouro?>"><small id="cep" class="form-text text-muted">Rua em que acontecerá o evento
+						<input name="logradouro" type="text" id="logradouro" class="form-control" value="<?=$this->logradouro?>"><small id="logradouro" class="form-text text-muted">Rua em que acontecerá o evento
 						</small>
 					</div>
 					<div class="form-group col-2">
