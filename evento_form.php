@@ -1,4 +1,4 @@
-		<!-- BREADCRUMB -->
+			<!-- BREADCRUMB -->
 	<ol class="breadcrumb">
 		<li class="breadcrumb-item"><a href="index.php">99helps</a></li>		
 		<li class="breadcrumb-item"><a href="evento.php">Eventos</a></li>
@@ -51,10 +51,14 @@
 						<small id="cep" class="form-text text-muted">Digite somente números
 						</small>
 					</div>
-					<div class="form-group col-9">
+					<div class="form-group col-7">
 						<label>Rua:</label>
 						<input name="rua" type="text" id="rua" class="form-control" value="<?=$this->logradouro?>"><small id="cep" class="form-text text-muted">Rua em que acontecerá o evento
 						</small>
+					</div>
+					<div class="form-group col-2">
+						<label for="numero">Número</label>
+						<input type="text" class="form-control" pattern="[0-9]+$" id="numero" name="numero" placeholder="Ex: 1568" value="<?=$this->numero?>"><small id="numero" class="form-text text-muted"></small>
 					</div>
 				</div>
 				<!-- LINHA 5 -->
@@ -63,22 +67,16 @@
 						<label>Bairro:</label>
 						<input name="bairro" type="text" id="bairro" size="40" class="form-control" value="<?=$this->bairro?>">
 					</div>
-					<div class="form-group col-5 ">
+					<div class="form-group col-3 ">
 						<label>Cidade:</label>
 						<input name="cidade" type="text" id="cidade" size="40" class="form-control" value="<?=$this->cidade?>">
 					</div>
-					<div class="form-group col-2">
+					<div class="form-group col-1">
 						<label>Estado:</label>
 						<input name="uf" type="text" id="uf" size="2" class="form-control" value="<?=$this->uf?>">
 					</div>
-					<div class="form-group col-2">
-						<label for="numero">Número</label>
-						<input type="text" class="form-control" pattern="[0-9]+$" id="numero" name="numero" placeholder="Ex: 1568" value="<?=$this->numero?>"><small id="numero" class="form-text text-muted"></small>
-					</div>					
-				</div>				
-				<!-- LINHA 6 -->
-				<div class="row">
-					<div class="form-group col-6">
+
+					<div class="form-group col-5">
 						<label for="fk_instituicao">Instituição: </label>
 						<select class="custom-select form-control" name="fk_instituicao">
 							<?php
@@ -92,13 +90,13 @@
 							?>
 						</select>
 					</div>
-				</div>
-				<!-- LINHA 7 -->
-				<div class="row">
-					<div class="form-group col-12">
-						<input type="submit" type="submit" class="btn btn-success" name="cadastra" value="Cadastrar">
+
+					<!-- LINHA 6 -->
+					<div class="row">
+						<div class="form-group col-12">
+							<input type="submit" type="submit" class="btn btn-success" name="cadastra" value="Cadastrar">
+						</div>
 					</div>
-				</div>
-			</form>
+				</form>
+			</div>
 		</div>
-	</div>
