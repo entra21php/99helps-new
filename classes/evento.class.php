@@ -239,7 +239,7 @@
 <!-- Autocomplete atraves da insercao do cep -->
 	<html>
     <head>
-    <title>ViaCEP Webservice</title>
+    <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <!-- Adicionando JQuery -->
