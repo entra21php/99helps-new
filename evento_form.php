@@ -1,4 +1,4 @@
-	<!-- BREADCRUMB -->
+		<!-- BREADCRUMB -->
 	<ol class="breadcrumb">
 		<li class="breadcrumb-item"><a href="index.php">99helps</a></li>		
 		<li class="breadcrumb-item"><a href="evento.php">Eventos</a></li>
@@ -39,70 +39,57 @@
 					</div>
 					<div class="form-group col-6">
 						<label for="foto_capa">Foto</label>
-						<input type="file" class="form-control-file" id="foto_capa" name="fileToUpload" aria-describedby="fileHelp">
+						<input type="file" class="form-control-file" id="foto_capa" name="fileToUpload" aria-describedby="fileHelp" value="<?=$this->foto_capa?>">
 						<small id="fileHelp" class="form-text text-muted">Use sua logo como imagem de perfil, mas somente arquivos PNG, JPG e JPEG :)</small>
 					</div>
 				</div>
 				<!-- LINHA 4 -->
 				<div class="row">
-					<div class="form-group col-9 ">
-						<label for="logradouro">Logradouro</label>
-						<input type="text" class="form-control" id="logradouro" name="logradouro" placeholder="Ex: Rua General Osório" value="<?=$this->logradouro?>"><small id="logradouro" class="form-text text-muted">Nome da rua onde acontecerá o evento </small>
-					</div>
 					<div class="form-group col-3">
-						<label for="numero">Número</label>
-						<input type="text" class="form-control" pattern="[0-9]+$" id="numero" name="numero" placeholder="Ex: 1568" value="<?=$this->numero?>"><small id="numero" class="form-text text-muted">Número da rua onde acontecerá o evento</small>
+						<label for="cep">CEP:</label>
+						<input name="cep" type="text" id="cep" class="form-control" value="<?=$this->cep?>">
+						<small id="cep" class="form-text text-muted">Digite somente números
+						</small>
+					</div>
+					<div class="form-group col-9">
+						<label>Rua:</label>
+						<input name="rua" type="text" id="rua" class="form-control" value="<?=$this->logradouro?>"><small id="cep" class="form-text text-muted">Rua em que acontecerá o evento
+						</small>
 					</div>
 				</div>
 				<!-- LINHA 5 -->
 				<div class="row">
-					<div class="form-group col-6">
-						<label for="estado">Estado</label>
-						<select class="custom-select form-control" name="estado" value="<?=$this->estado?>">
-							<option selected>Selecione o estado</option>
-							<?php
-							foreach ($estado as $id => $nome) {
-								if ($nome==$this->estado) {
-									echo '<option value="'.$nome.'" selected>'.$nome.'</option>';
-								} else {
-									echo '<option value="'.$nome.'">'.$nome.'</option>';
-								}
-							}
-							?>
-						</select>
+					<div class="form-group col-3 ">
+						<label>Bairro:</label>
+						<input name="bairro" type="text" id="bairro" size="40" class="form-control" value="<?=$this->bairro?>">
 					</div>
-					<div class="form-group col-6">
-						<label for="cidade">Cidade</label>
-						<select class="custom-select form-control" name="cidade" value="<?=$this->cidade?>">
-							<option selected>Selecione a cidade</option>
-							<?php
-							$sqlCity = "SELECT * FROM cidades";	
-							$consultaCity = mysql_query($sqlCity);
-							while ($rsCity = mysql_fetch_array($consultaCity)) {
-								if ($rsCity['id']==$this->cidade) {
-									echo '<option value="'.$rsCity['id'].'" selected>'.$rsCity['cidadenome'].'</option>';
-								} else {
-									echo '<option value="'.$rsCity['id'].'">'.$rsCity['cidadenome'].'</option>';
-								}
-							}
-							?>
-						</select>
+					<div class="form-group col-5 ">
+						<label>Cidade:</label>
+						<input name="cidade" type="text" id="cidade" size="40" class="form-control" value="<?=$this->cidade?>">
 					</div>
-				</div>
+					<div class="form-group col-2">
+						<label>Estado:</label>
+						<input name="uf" type="text" id="uf" size="2" class="form-control" value="<?=$this->uf?>">
+					</div>
+					<div class="form-group col-2">
+						<label for="numero">Número</label>
+						<input type="text" class="form-control" pattern="[0-9]+$" id="numero" name="numero" placeholder="Ex: 1568" value="<?=$this->numero?>"><small id="numero" class="form-text text-muted"></small>
+					</div>					
+				</div>				
 				<!-- LINHA 6 -->
 				<div class="row">
 					<div class="form-group col-6">
 						<label for="fk_instituicao">Instituição: </label>
 						<select class="custom-select form-control" name="fk_instituicao">
-						<?php
+							<?php
 							$sql ="SELECT instituicoes.nome_fantasia,instituicoes.id,usuarios_instituicoes.nivel_acesso FROM usuarios_instituicoes LEFT JOIN instituicoes ON usuarios_instituicoes.fk_instituicao=instituicoes.id WHERE fk_usuario=".$_SESSION['id_usuario']." AND usuarios_instituicoes.nivel_acesso='Administrador'";
 							$consulta = mysql_query($sql);
 							while ($rs = mysql_fetch_array($consulta)) {
-						?>
-							<option value="<?=$rs['id']?>" <?=($this->nome_fantasia == $rs['nome_fantasia']) ? 'selected' : ''?>><?=$rs['nome_fantasia']?></option>
-						<?php
+								?>
+								<option value="<?=$rs['id']?>" <?=($this->nome_fantasia == $rs['nome_fantasia']) ? 'selected' : ''?>><?=$rs['nome_fantasia']?></option>
+								<?php
 							} // endwhile
-						?>
+							?>
 						</select>
 					</div>
 				</div>
